@@ -1,7 +1,10 @@
+"use client";
 import Image from "next/image";
 import styles from "./home.module.css";
+import { useRouter } from "next/navigation";
 
 const Home = () => {
+  const router = useRouter();
   return (
     <div className={styles.container}>
       <div className={styles.textContainer}>
@@ -11,7 +14,7 @@ const Home = () => {
         </p>
         <div className={styles.buttons}>
           <button className={styles.button}>Learn More</button>
-          <button className={styles.button}>Contact</button>
+          <button className={styles.button} onClick={() => router.push("/contact")}>Contact</button>
         </div>
         <div className={styles.brands}>
           <Image src="/brands.png" alt="" fill className={styles.brands}/>

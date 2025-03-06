@@ -1,49 +1,38 @@
 import { Post, User } from "./models";
 import { connectToDb } from "./utils"
-
-// const users = [
-//     {id:1, user: "John"},
-//     {id:2, user: "Jane"},
-//     {id:3, user: "Johnathan"},
-//     {id:4, user: "Janet"},
-// ];
-
-// const posts = [
-//     {id: 1, title: "Post 1", body: ".......", userId: 1},
-//     {id: 2, title: "Post 2", body: ".......", userId: 2},
-//     {id: 3, title: "Post 3", body: ".......", userId: 3},
-//     {id: 4, title: "Post 4", body: ".......", userId: 4},
-// ];
+import { unstable_noStore as noStore } from "next/cache";
 
 export const getPosts = async () => {
     try {
-        connectToDb();
+        await connectToDb();
         const posts = await Post.find();
+        //console.log("Fetched posts:", posts); // See what data is being returned
         return posts;
     } catch (err) {
-        console.log(err);
-        throw new Error("Failed to fetch posts!");
-        
-        
+        console.log("Error fetching posts:", err);
+        throw err;
     }
 }
 
 export const getPost = async (slug) => {
     try {
-        connectToDb();
-        const post = await Post.find({slug});
+        await connectToDb();
+        const post = await Post.findOne({ slug }); // Changed from find() to findOne()
+        //console.log("Found post:", post); // Debug log
+        if (!post) {
+            throw new Error("Post not found");
+        }
         return post;
     } catch (err) {
-        console.log(err);
-        throw new Error("Failed to fetch posts!");
-        
-        
+        console.log("Error fetching post:", err);
+        throw err;
     }
 }
 
 export const getUser = async (id) => {
+    noStore();
     try {
-        connectToDb();
+        await connectToDb();
         const user = await User.findById(id);
         return user;
     } catch (err) {
@@ -53,15 +42,15 @@ export const getUser = async (id) => {
         
     }
 };
+
 export const getUsers = async () => {
     try {
-        connectToDb();
-        const users = await Users.find();
+        await connectToDb();
+        const users = await User.find();
         return users;
     } catch (err) {
         console.log(err);
-        throw new Error("Failed to fetch users!");
-        
-        
+        throw new Error("Failed to fetch users!");       
     }
 };
+
